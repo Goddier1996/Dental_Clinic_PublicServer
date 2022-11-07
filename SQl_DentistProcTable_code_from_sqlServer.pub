@@ -1,0 +1,581 @@
+
+---------- Sql server Not work , here was code from sql server app ------------------
+
+
+
+------------------------- Web side Dentist doctor -------------------------------
+
+
+-- Tables
+
+create table userWebSideDoctor_Dentist (
+User_code int identity(1,1) not null primary key,
+User_Login nvarchar(20) not null,
+FirstName nvarchar(20) not null,
+Email nvarchar(20) not null,
+Birthday date null,
+User_password nvarchar(20) not null,
+Confirm_password nvarchar(20) not null,
+
+Day_date text null,
+Hour_day text null,
+Serial_codeHour int null,
+
+UserType_code int not null,
+IsActive bit default 1
+)
+go
+
+
+
+
+create table ReviewsWebSideDoctor_Dentist (
+Serial_code int identity(1,1) not null primary key,
+textReviews ntext not null,
+Date_published date null,
+Publish_by int not null foreign key references userWebSideDoctor_Dentist([User_code]),
+IsActive bit default 1
+)
+go
+
+
+
+
+create table Day_Appointment_Web_SideDoctor_Dentist (
+Serial_code int identity(1,1) not null primary key,
+Day_date nvarchar(20) not null,
+IsActive bit default 1
+)
+go
+
+
+
+
+create table Hours_Appointment_Web_SideDoctor_Dentist (
+Serial_code int identity(1,1) not null primary key,
+Hour_day nvarchar(10) not null,
+Day_date int not null foreign key references Day_Appointment_Web_SideDoctor_Dentist([Serial_code]),
+IsActive bit default 1
+)
+go
+
+
+
+
+create table medical_file_user_SideDoctor_Dentist(
+Publish_by int not null foreign key references userWebSideDoctor_Dentist([User_code]),
+Serial_code int identity(1,1) not null primary key,
+Date_published date null,
+File_user text null,
+textDoctor ntext not null,
+priceSevice ntext not null,
+IsActive bit default 1
+)
+go
+
+
+
+create table ReviewsWebSideDoctor_Dentist_Likes(
+Serial_code_how_Like int not null foreign key references ReviewsWebSideDoctor_Dentist([Serial_code]),
+Serial_code int identity(1,1) not null primary key,
+how_like text null,
+)
+go
+
+
+
+
+
+---proc Table ReviewsWebSideDoctor_Dentist_Likes
+
+
+alter function Count_Likes(@Serial_code int)
+returns int 
+as 
+begin
+return (
+select Count([Serial_code]) from [dbo].[ReviewsWebSideDoctor_Dentist_Likes] where [Serial_code_how_Like] = @Serial_code
+)
+end
+go
+
+
+
+
+
+create proc Add_Review_Likes
+@Serial_code_how_Like int,
+@how_like text,
+
+@Serial_code int output
+as
+
+insert into [dbo].[ReviewsWebSideDoctor_Dentist_Likes]([Serial_code_how_Like],[how_like])
+values(@Serial_code_how_Like,@how_like)
+set @Serial_code = @@IDENTITY
+go
+exec Add_Review_Likes 4,'Goddier',null
+go
+
+
+
+---proc Table users
+
+alter proc Select_All_users_from_Dentist
+as 
+select * from [dbo].userWebSideDoctor_Dentist
+go
+exec Select_All_users_from_Dentist
+go
+
+
+
+alter proc Select_users_from_Dentist
+as 
+select * from [dbo].userWebSideDoctor_Dentist where [IsActive] = 1 and [UserType_code] = 1
+go
+exec Select_users_from_Dentist
+go
+
+
+
+create proc Select_users_blocked_from_Dentist
+as 
+select * from [dbo].userWebSideDoctor_Dentist where [IsActive] = 0 and [UserType_code] = 1
+go
+exec Select_users_blocked_from_Dentist
+go
+
+
+
+
+create proc Select_users_check_Active_queues_from_Dentist
+as 
+select * from [dbo].userWebSideDoctor_Dentist where [Day_date] IS NOT NULL
+go
+exec Select_users_check_Active_queues_from_Dentist
+go
+
+
+
+
+create proc Select_users_from_Dentist_by_usercode
+    @User_code int
+as
+    select * from [dbo].[userWebSideDoctor_Dentist] where [User_code] = @User_code 
+go
+exec Select_users_from_Dentist_by_usercode 1
+go
+
+
+
+
+alter proc Select_Doctors_from_Dentist
+as 
+select * from [dbo].userWebSideDoctor_Dentist where [UserType_code] = 2 and [IsActive] = 1
+go
+exec Select_Doctors_from_Dentist
+go
+
+
+
+
+Alter proc Add_user_from_Dentist
+@Birthday date,
+@User_Login nvarchar(20),
+@FirstName nvarchar(20),
+@UserTypeCode int, 
+@Email nvarchar(30),
+@ConfirmPassword nvarchar(20),
+@UserPassword nvarchar(20),
+@Day_date nvarchar(20),
+@Hour_day nvarchar(10),
+@Serial_codeHour int,
+@UserCode int output
+as
+
+insert into [dbo].[userWebSideDoctor_Dentist]([Birthday],[User_Login],[Firstname],[UserType_code],[Email],[Confirm_password],[User_password],[Day_date],[Hour_day],[Serial_codeHour])
+values(@Birthday,@User_Login,@FirstName,@UserTypeCode,@Email,@ConfirmPassword,@UserPassword,@Day_date,@Hour_day,@Serial_codeHour)
+set @UserCode = @@IDENTITY
+go
+exec Add_user_from_Dentist null,'Admin','Admin',3,'Admin@gmail.com','kot1996','kot1996',null,null,null,null
+go
+
+
+
+
+Alter proc Login_user_from_Dentist
+@Login NVarChar(20),
+@Password NVarChar(20)
+as
+select * from userWebSideDoctor_Dentist where User_Login = @Login and User_password = @Password and [IsActive] = 1
+go
+exec Login_user_from_Dentist 'Goddier','123'
+go
+
+
+
+
+create proc Find_user_from_Dentist
+@Email nvarchar(20)
+as
+select * from userWebSideDoctor_Dentist where Email = @Email 
+go
+exec Find_user_from_Dentist 'artium@gmail.com'
+go
+
+
+
+create proc Delete_User_WebSideDoctor_Dentist
+@User_code int
+as
+
+update [dbo].[userWebSideDoctor_Dentist]
+set[IsActive]=0
+where [User_code]=@User_code
+go
+  exec Delete_User_WebSideDoctor_Dentist 1
+  go
+
+
+
+  
+create proc Reactivate_User_WebSideDoctor_Dentist
+@User_code int
+as
+
+update [dbo].userWebSideDoctor_Dentist
+set[IsActive]=1
+where [User_code]=@User_code
+go
+exec Reactivate_User_WebSideDoctor_Dentist 12
+go
+
+
+
+
+alter proc Update_new_password_user_from_Dentist
+@Confirm_password nvarchar(20),
+@User_password nvarchar(20),
+@User_code int 
+as
+
+update [dbo].[userWebSideDoctor_Dentist]
+set
+[Confirm_password]=@Confirm_password,
+[User_password]=@User_password
+where [User_code]=@User_code
+go
+exec Update_new_password_user_from_Dentist '99','99',1
+go
+
+
+
+
+alter proc Update_new_Day_hour_user_after_check_doctor_from_Dentist
+@Day_date text,
+@Hour_day text,
+@Serial_codeHour int,
+@User_code int 
+as
+
+update [dbo].[userWebSideDoctor_Dentist]
+set
+[Day_date]=@Day_date,
+[Hour_day]=@Hour_day,
+[Serial_codeHour]=@Serial_codeHour
+where [User_code]=@User_code
+go
+exec Update_new_Day_hour_user_after_check_doctor_from_Dentist null,null,null,1
+go
+
+
+
+
+Alter proc Update_userWebSideDoctor_Dentist
+@Birthday date,
+@User_Login nvarchar(20),
+@FirstName nvarchar(20),
+@UserType_code int, 
+@Email nvarchar(20),
+@Confirm_password nvarchar(20),
+@User_password nvarchar(20),
+@Day_date text,
+@Hour_day text,
+@Serial_codeHour int,
+@User_code int 
+as
+
+update [dbo].[userWebSideDoctor_Dentist]
+set[Birthday]=@Birthday,
+[User_Login]=@User_Login,
+[FirstName]= @FirstName,
+[UserType_code]=@UserType_code, 
+[Email]=@Email,
+[Confirm_password]=@Confirm_password,
+[User_password]=@User_password,
+[Day_date]=@Day_date,
+[Hour_day]=@Hour_day,
+[Serial_codeHour]=@Serial_codeHour
+
+where [User_code]=@User_code
+go
+
+exec Update_userWebSideDoctor_Dentist '1/1/1998','Goddier','artium',1,'gdg@gmail.com','123','123',null,null,null,1
+go
+
+
+
+
+alter proc countDoctors
+as
+select Count([User_code]) AS Count_Doctors from [dbo].[userWebSideDoctor_Dentist] where [IsActive] = 1 and [UserType_code]=2
+go
+exec countDoctors
+go
+
+
+alter proc countUsers
+as
+select Count([User_code]) AS Count_Users from [dbo].[userWebSideDoctor_Dentist] where [IsActive] = 1 and [UserType_code]=1
+go
+exec countUsers
+go
+
+
+
+
+---proc Table medical file user
+
+
+select * from View_medical_file_user
+go
+
+
+
+alter proc Add_medical_file_user
+
+@Publish_by int,
+@Date_published date,
+@File_user text,
+@textDoctor text,
+@priceSevice ntext,
+@Serial_code int output
+as
+
+insert into [dbo].[medical_file_user_SideDoctor_Dentist]([Publish_by],[Date_published],[File_user],[textDoctor],[priceSevice])
+values(@Publish_by,@Date_published,@File_user,@textDoctor,@priceSevice)
+set @Serial_code = @@IDENTITY
+go
+
+exec Add_medical_file_user 9,'1/1/2022','https://i.postimg.cc/cLKSKFZH/z9.jpg','ypu are not good feel','50$',null
+go
+
+
+
+
+create proc Select_View_medical_file_user
+    @Publish_by int
+as
+    select * from View_medical_file_user where [Publish_by] = @Publish_by and [IsActive]=1
+go
+exec Select_View_medical_file_user 9
+go
+
+
+
+create proc Select_View_medical_file_userIsActive_Not
+    @Publish_by int
+as
+    select * from View_medical_file_user where [Publish_by] = @Publish_by and [IsActive]=0
+go
+exec Select_View_medical_file_userIsActive_Not 1
+go
+
+
+
+
+alter proc Select_View_medical_file_users
+as
+    select * from View_medical_file_user where [IsActive]=1
+go
+exec Select_View_medical_file_users
+go
+
+
+
+
+create proc Delete_medical_file_user
+@Serial_code int
+as
+
+update [dbo].[medical_file_user_SideDoctor_Dentist]
+set[IsActive]=0
+where [Serial_code]=@Serial_code
+go
+  exec Delete_medical_file_user 1
+  go
+
+
+
+
+
+
+---proc Table Reviews
+
+Alter proc Select_Reviews_from_Dentist
+as
+select * from View_Review_user where [IsActive]=1
+go
+exec Select_Reviews_from_Dentist
+go
+
+
+
+select * from View_Review_user
+go
+
+
+
+Alter proc Add_Reviews
+@textReviews ntext,
+@DatePublished date,
+@Publish_by int, 
+@Serial_code int output
+as
+insert into [dbo].[ReviewsWebSideDoctor_Dentist]([textReviews],[Date_published],[Publish_by])
+values(@textReviews,@DatePublished,@Publish_by)
+set @Serial_code = @@IDENTITY
+go
+exec Add_Reviews 'i am not love this service','20220620',9,null
+go
+
+
+
+Alter proc Select_View_Review_user_usercode
+    @Publish_by int
+as
+    select * from [dbo].ReviewsWebSideDoctor_Dentist where [Publish_by] = @Publish_by and [IsActive]=1
+go
+exec Select_View_Review_user_usercode 31
+go
+
+
+
+
+create proc Delete_View_Review_user
+@Serial_code int
+as
+
+update [dbo].[ReviewsWebSideDoctor_Dentist]
+set[IsActive]=0
+where [Serial_code]=@Serial_code
+go
+  exec Delete_View_Review_user 16
+  go
+
+
+
+create proc countReviews
+as
+select Count([Serial_code]) AS Count_Reviews from [dbo].[ReviewsWebSideDoctor_Dentist] where [IsActive] = 1
+go
+exec countReviews
+go
+
+
+
+
+---proc Table days
+
+create proc Select_days_from_Dentist_Serial_code
+as 
+select * from [dbo].Day_Appointment_Web_SideDoctor_Dentist where [IsActive] = 1
+go
+exec Select_days_from_Dentist_Serial_code
+go
+
+
+
+Alter proc Add_day_from_Dentist
+@Day_date nvarchar(20),
+
+@Serial_code int output
+as
+
+insert into [dbo].[Day_Appointment_Web_SideDoctor_Dentist]([Day_date])
+values(@Day_date)
+set @Serial_code = @@IDENTITY
+go
+exec Add_day_from_Dentist 'Saturday',null
+go
+
+
+
+
+
+---proc Table hours
+
+Alter proc Select_hours_from_Dentist_Serial_code
+as 
+select * from View_Days_Hours where [IsActive] = 1
+go
+exec Select_hours_from_Dentist_Serial_code
+go
+
+
+
+Alter proc Select_hours_from_Dentist_by_usercode
+    @Day_date int
+as
+    select * from View_Days_Hours where [Day_date] = @Day_date
+go
+exec Select_hours_from_Dentist_by_usercode 1
+go
+
+
+
+create proc Delete_hour
+@Serial_code int
+as
+
+update [dbo].[Hours_Appointment_Web_SideDoctor_Dentist]
+set[IsActive]=0
+where [Serial_code]=@Serial_code
+go
+  exec Delete_hour 1
+  go
+
+
+
+
+Alter proc Reactivate_hour
+@Serial_code int
+as
+
+update [dbo].[Hours_Appointment_Web_SideDoctor_Dentist]
+set[IsActive]=1
+where [Serial_code]=@Serial_code
+go
+  exec Reactivate_hour 58
+  go
+
+
+
+create proc Add_Hours_from_Dentist
+@Hour_day nvarchar(10),
+@Day_date int,
+@Serial_code int output
+as
+
+insert into [dbo].[Hours_Appointment_Web_SideDoctor_Dentist]([Hour_day],[Day_date])
+values(@Hour_day,@Day_date)
+set @Serial_code = @@IDENTITY
+go
+exec Add_Hours_from_Dentist 'Closed',7,null
+go
+
+
+
+select * from View_Days_Hours
+go                                                    
