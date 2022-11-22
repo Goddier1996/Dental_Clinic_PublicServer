@@ -38,7 +38,7 @@ infoHours.get('/', (req, res) => {
 
     db.collection('hours')
         .find({ IsActive: "1" })
-        .sort({ author: 1 })
+        .sort({ Hour_day: 1 })
         .forEach(hour => allHours.push(hour))
         .then(() => {
             res.status(200).json(allHours)
@@ -59,7 +59,7 @@ infoHours.get('/:code', (req, res) => {
 
     db.collection('hours')
         .find({ Serial_code: req.params.code, IsActive: "1" })
-        .sort({ author: 1 })
+        .sort({ Hour_day: 1 })
         .forEach(codeHour => codeAllHours.push(codeHour))
         .then(() => {
             res.status(200).json(codeAllHours)

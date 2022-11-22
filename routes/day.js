@@ -38,7 +38,7 @@ infoDays.get('/', (req, res) => {
 
     db.collection('days')
         .find()
-        .sort({ author: 1 })
+        .sort({ Serial_code: 1 })
         .forEach(day => allDays.push(day))
         .then(() => {
             res.status(200).json(allDays)

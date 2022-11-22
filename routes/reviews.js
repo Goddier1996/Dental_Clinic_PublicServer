@@ -39,7 +39,7 @@ reviews.get('/', (req, res) => {
 
     db.collection('reviews')
         .find({ IsActive: "1" })
-        .sort({ author: 1 })
+        // .sort({ author: 1 })
         .forEach(review => allReviews.push(review))
         .then(() => {
             res.status(200).json(allReviews)
