@@ -32,14 +32,16 @@ connectToDb((err) => {
 
 
 
-
 reviews.get('/', (req, res) => {
 
     let allReviews = []
+    const page = req.query.p || 1;
+    const reviewsPerPage = 6;
 
     db.collection('reviews')
         .find({ IsActive: "1" })
-        // .sort({ author: 1 })
+        .skip((page - 1) * reviewsPerPage)
+        .limit(reviewsPerPage)
         .forEach(review => allReviews.push(review))
         .then(() => {
             res.status(200).json(allReviews)
@@ -48,7 +50,6 @@ reviews.get('/', (req, res) => {
             res.status(500).json({ error: "not fetch the file" })
         })
 })
-
 
 
 
