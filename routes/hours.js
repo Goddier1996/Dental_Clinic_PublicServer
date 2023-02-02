@@ -31,7 +31,6 @@ connectToDb((err) => {
 
 
 
-
 infoHours.get('/', (req, res) => {
 
     let allHours = []
@@ -47,7 +46,6 @@ infoHours.get('/', (req, res) => {
             res.status(500).json({ error: "not fetch the file" })
         })
 })
-
 
 
 
@@ -73,10 +71,7 @@ infoHours.get('/:code', (req, res) => {
 
 
 
-
-
 // is not active 2
-
 infoHours.patch('/NotActive/:id', (req, res) => {
 
     // const updates = req.body
@@ -102,12 +97,7 @@ infoHours.patch('/NotActive/:id', (req, res) => {
 
 
 
-
-
-
-
 // is active 1
-
 infoHours.patch('/active/:id', (req, res) => {
 
     // const updates = req.body
@@ -129,7 +119,6 @@ infoHours.patch('/active/:id', (req, res) => {
         res.status(500).json({ error: "Not a valid doc id" })
     }
 })
-
 
 
 

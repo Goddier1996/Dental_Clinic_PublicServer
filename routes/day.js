@@ -31,7 +31,6 @@ connectToDb((err) => {
 
 
 
-
 infoDays.get('/', (req, res) => {
 
     let allDays = []
@@ -51,7 +50,6 @@ infoDays.get('/', (req, res) => {
 
 
 
-
 infoDays.get('/:code', (req, res) => {
 
     db.collection('days')
@@ -65,11 +63,6 @@ infoDays.get('/:code', (req, res) => {
         })
 
 })
-
-
-
-
-
 
 
 

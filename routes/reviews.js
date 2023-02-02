@@ -53,6 +53,7 @@ reviews.get('/', (req, res) => {
 
 
 
+
 // show count reviews how active
 reviews.get('/countReviews', (req, res) => {
 
@@ -70,6 +71,30 @@ reviews.get('/countReviews', (req, res) => {
         })
 })
 
+
+
+
+reviews.get('/showReviewCheckUserLike/:id/:PublishByLike', (req, res) => {
+
+
+    if (ObjectId.isValid(req.params.id)) {
+
+        db.collection('reviews')
+            .findOne({ _id: ObjectId(req.params.id), Count_likes: { $elemMatch: { Publish_by: req.params.PublishByLike } } })
+
+            .then(doc => {
+                res.status(200).json(doc)
+            })
+            .catch(err => {
+                res.status(500).json({ error: "not fetch the file" })
+            })
+    }
+
+    else {
+        res.status(500).json({ error: "Not a valid doc id" })
+    }
+
+})
 
 
 
@@ -91,7 +116,6 @@ reviews.get('/:PublishBy', (req, res) => {
         })
 
 })
-
 
 
 
@@ -120,6 +144,29 @@ reviews.delete('/delete/:id', (req, res) => {
 
 
 
+// remove like if user have in this review like
+reviews.patch('/removeLike/:id/:PublishByLike', (req, res) => {
+
+    if (ObjectId.isValid(req.params.id)) {
+
+        db.collection('reviews')
+            .updateOne({ _id: ObjectId(req.params.id) }, { $pull: { Count_likes: { Publish_by: req.params.PublishByLike } } })
+
+            .then(result => {
+                res.status(200).json(result)
+            })
+            .catch(err => {
+                res.status(500).json({ error: "not fetch the file" })
+            })
+    }
+
+    else {
+        res.status(500).json({ error: "Not a valid doc id" })
+    }
+})
+
+
+
 
 // add new reviews
 reviews.post('/', (req, res) => {
@@ -136,7 +183,6 @@ reviews.post('/', (req, res) => {
             res.status(500).json({ error: "not fetch the file" })
         })
 })
-
 
 
 
