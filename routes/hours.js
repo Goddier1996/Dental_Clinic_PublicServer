@@ -56,7 +56,7 @@ infoHours.get('/:code', (req, res) => {
     let codeAllHours = []
 
     db.collection('hours')
-        .find({ Serial_code: req.params.code, IsActive: "1" })
+        .find({ Serial_code: req.params.code })
         .sort({ Hour_day: 1 })
         .forEach(codeHour => codeAllHours.push(codeHour))
         .then(() => {
