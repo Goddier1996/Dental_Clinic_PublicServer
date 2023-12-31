@@ -49,7 +49,6 @@ infoHours.get('/', (req, res) => {
 
 
 
-
 infoHours.get('/:code', (req, res) => {
 
 
