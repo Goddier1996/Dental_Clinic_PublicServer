@@ -68,7 +68,6 @@ infoHours.get('/:code', (req, res) => {
 })
 
 
-
 // is not active 2
 infoHours.patch('/NotActive/:id', (req, res) => {
 
