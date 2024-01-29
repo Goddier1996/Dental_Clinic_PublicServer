@@ -31,8 +31,6 @@ connectToDb((err) => {
 
 
 
-
-
 // show all active users
 users.get('/', (req, res) => {
 
@@ -73,7 +71,6 @@ users.get('/countUsers', (req, res) => {
 
 
 
-
 // show count doctors how active
 users.get('/countDoctors', (req, res) => {
 
@@ -95,7 +92,6 @@ users.get('/countDoctors', (req, res) => {
 
 
 
-
 // show all users how have a turn
 users.get('/showTurnUsers', (req, res) => {
 
@@ -116,8 +112,6 @@ users.get('/showTurnUsers', (req, res) => {
 
 
 
-
-
 // show all users how have a turn
 users.get('/showTurnUsers', (req, res) => {
 
@@ -134,8 +128,6 @@ users.get('/showTurnUsers', (req, res) => {
             res.status(500).json({ error: "not fetch the file" })
         })
 })
-
-
 
 
 
@@ -156,8 +148,6 @@ users.get('/doctors', (req, res) => {
             res.status(500).json({ error: "not fetch the file" })
         })
 })
-
-
 
 
 
@@ -188,13 +178,10 @@ users.patch('/addTurnUser/:id', (req, res) => {
 
 
 
-
-
-// find user with email adrees , if user forget a password we create this
+// find user with email , if user forget a password we create this
 users.post('/findUser', (req, res) => {
 
     let Email = req.body.Email
-
 
     db.collection('users')
         .findOne({ IsActive: "1", Email: Email })
@@ -206,8 +193,6 @@ users.post('/findUser', (req, res) => {
             res.status(500).json({ error: "not fetch the file" })
         })
 })
-
-
 
 
 
@@ -236,11 +221,6 @@ users.post('/login', (req, res) => {
 
 
 
-
-
-
-// is active 1
-
 users.patch('/active/:id', (req, res) => {
 
     // const updates = req.body
@@ -266,8 +246,6 @@ users.patch('/active/:id', (req, res) => {
 
 
 
-
-
 // show add block users
 users.get('/BlockUsers', (req, res) => {
 
@@ -284,7 +262,6 @@ users.get('/BlockUsers', (req, res) => {
             res.status(500).json({ error: "not fetch the file" })
         })
 })
-
 
 
 
@@ -315,7 +292,6 @@ users.patch('/NotActive/:id', (req, res) => {
 
 
 
-
 // show all doctors
 users.get('/showDoctors', (req, res) => {
 
@@ -332,8 +308,6 @@ users.get('/showDoctors', (req, res) => {
             res.status(500).json({ error: "not fetch the file" })
         })
 })
-
-
 
 
 
@@ -363,9 +337,66 @@ users.patch('/:id', (req, res) => {
 
 
 
+users.put('/:id', (req, res) => {
+
+    const updates = req.body
+
+    if (ObjectId.isValid(req.params.id)) {
+
+        db.collection('users')
+            .updateOne({ _id: ObjectId(req.params.id) }, { $set: updates })
+
+            .then(result => {
+                res.status(200).json(result)
+            })
+            .catch(err => {
+                res.status(500).json({ error: "not fetch the file" })
+            })
+    }
+
+    else {
+        res.status(500).json({ error: "Not a valid doc id" })
+    }
+})
+
+
 
 
 // add new users
+
+users.post('/findLogin', (req, res) => {
+
+    let User_Login = req.body.User_Login
+
+    db.collection('users')
+        .findOne({ IsActive: "1", User_Login: User_Login })
+
+        .then(doc => {
+            res.status(200).json(doc)
+        })
+        .catch(err => {
+            res.status(500).json({ error: "not fetch the file" })
+        })
+})
+
+
+users.post('/findEmail', (req, res) => {
+
+    let Email = req.body.Email
+
+    db.collection('users')
+        .findOne({ IsActive: "1", Email: Email })
+
+        .then(doc => {
+            res.status(200).json(doc)
+        })
+        .catch(err => {
+            res.status(500).json({ error: "not fetch the file" })
+        })
+})
+
+
+
 users.post('/', (req, res) => {
 
     const user = req.body
@@ -380,8 +411,6 @@ users.post('/', (req, res) => {
             res.status(500).json({ error: "not fetch the file" })
         })
 })
-
-
 
 
 
