@@ -66,4 +66,57 @@ infoDays.get('/:code', (req, res) => {
 
 
 
+
+// is not active 2
+infoDays.patch('/NotActive/:id', (req, res) => {
+
+    // const updates = req.body
+
+    if (ObjectId.isValid(req.params.id)) {
+
+        db.collection('days')
+            .updateOne({ _id: ObjectId(req.params.id) }, { $set: { IsActive: "2" } })
+
+            .then(result => {
+                res.status(200).json(result)
+            })
+            .catch(err => {
+                res.status(500).json({ error: "not fetch the file" })
+            })
+    }
+
+    else {
+        res.status(500).json({ error: "Not a valid doc id" })
+    }
+})
+
+
+
+
+// is active 1
+infoDays.patch('/active/:id', (req, res) => {
+
+    // const updates = req.body
+
+    if (ObjectId.isValid(req.params.id)) {
+
+        db.collection('days')
+            .updateOne({ _id: ObjectId(req.params.id) }, { $set: { IsActive: "1" } })
+
+            .then(result => {
+                res.status(200).json(result)
+            })
+            .catch(err => {
+                res.status(500).json({ error: "not fetch the file" })
+            })
+    }
+
+    else {
+        res.status(500).json({ error: "Not a valid doc id" })
+    }
+})
+
+
+
+
 module.exports = infoDays;
