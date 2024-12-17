@@ -2,6 +2,7 @@ const express = require(`express`)//get,post we use now
 const { connectToDb, getDb } = require("../db")
 const { ObjectId } = require("mongodb")
 const cors = require(`cors`)
+const nodemailer = require('nodemailer');
 
 
 
@@ -15,10 +16,6 @@ app.use(express.json());
 
 
 let db;
-
-
-
-
 connectToDb((err) => {
     if (!err) {
         app.listen(3006, () => {
@@ -67,7 +64,6 @@ users.get('/countUsers', (req, res) => {
             res.status(500).json({ error: "not fetch the file" })
         })
 })
-
 
 
 
@@ -150,6 +146,45 @@ users.get('/doctors', (req, res) => {
 })
 
 
+// here connect to nodemailer send mail
+let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'your mail',
+        pass: 'your password mail'
+    }
+});
+
+
+
+
+// function send Email user if have turn
+async function sendGmail(dataUser) {
+
+    // send mail with defined transport object
+    const info = await transporter.sendMail({
+        from: '"Doctor Artem" <your mail>', // sender address
+        to: dataUser.Email, // list of receivers
+        subject: `An Appointment at a Dental Clinic`, // Subject line
+        // text: "", // plain text body
+        html: `
+        <div>
+          <p>Hello you have Appointment at Clinic 🙂
+          <br/><br/>
+          Info about your Appointment:<br/>
+          <b>Date:</b> ${dataUser.DateUserTurn} <br/>
+          <b>Day:</b> ${dataUser.Day_date} <br/>
+          <b>Time:</b> ${dataUser.Hour_day}<br/><br/><br/><br/>
+             Thank you very much. See you at our meeting at the clinic 😁
+          </p>
+          <img src="https://i.postimg.cc/gjHhq6WS/logo-clinic.jpg" alt="Girl in a jacket" width="auto" height="150">
+        </div>
+       `, // html body
+    });
+
+    console.log("Message sent: %s", info.messageId);
+}
+
 
 
 // add turn to user
@@ -161,15 +196,20 @@ users.patch('/addTurnUser/:id', (req, res) => {
 
         db.collection('users')
             .updateOne({ _id: ObjectId(req.params.id) }, { $set: updates })
-
-            .then(result => {
-                res.status(200).json(result)
+            .then(() => {
+                // send mail to user info about turn he save !
+                sendGmail(updates)
+                    .then(result => {
+                        res.status(200).json(result)
+                    })
+                    .catch(err => {
+                        res.status(500).json({ error: "not fetch the file" })
+                    })
             })
             .catch(err => {
                 res.status(500).json({ error: "not fetch the file" })
             })
     }
-
     else {
         res.status(500).json({ error: "Not a valid doc id" })
     }
@@ -361,7 +401,9 @@ users.put('/:id', (req, res) => {
 
 
 
+
 // add new users
+
 users.post('/findLogin', (req, res) => {
 
     let User_Login = req.body.User_Login
