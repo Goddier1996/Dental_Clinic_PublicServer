@@ -2,7 +2,7 @@ const express = require(`express`)//get,post we use now
 const { connectToDb, getDb } = require("../db")
 const { ObjectId } = require("mongodb")
 const cors = require(`cors`)
-const { sendGmail } = require("../functions/functionsServer");
+const { sendGmailAboutAppointment, sendGmailWhenUserRegister } = require("../functions/functionsServer");
 
 
 
@@ -158,7 +158,7 @@ users.patch('/addTurnUser/:id', (req, res) => {
             .updateOne({ _id: ObjectId(req.params.id) }, { $set: updates })
             .then(() => {
                 // send mail to user info about turn he save !
-                sendGmail(updates)
+                sendGmailAboutAppointment(updates)
                     .then(result => {
                         res.status(200).json(result)
                     })
@@ -362,7 +362,7 @@ users.put('/:id', (req, res) => {
 
 
 
-// add new users
+// add new users check if user exist with email or login
 
 users.post('/findLogin', (req, res) => {
 
@@ -397,6 +397,7 @@ users.post('/findEmail', (req, res) => {
 
 
 
+// when user register we send mail to user
 users.post('/', (req, res) => {
 
     const user = req.body
@@ -404,6 +405,16 @@ users.post('/', (req, res) => {
     db.collection('users')
 
         .insertOne(user)
+        .then(() => {
+            // send mail to user info about turn he save !
+            sendGmailWhenUserRegister(user)
+                .then(result => {
+                    res.status(200).json(result)
+                })
+                .catch(err => {
+                    res.status(500).json({ error: "not fetch the file" })
+                })
+        })
         .then(result => {
             res.status(201).json(result)
         })
@@ -437,5 +448,8 @@ users.get('/:id', (req, res) => {
 
 
 })
+
+
+
 
 module.exports = users;
