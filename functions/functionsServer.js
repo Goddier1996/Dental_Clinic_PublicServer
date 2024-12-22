@@ -77,4 +77,42 @@ async function sendGmailWhenUserRegister(dataUser) {
 
 
 
-module.exports = { sendGmailAboutAppointment, sendGmailWhenUserRegister };
+// here we send email to user with info about his debt
+async function sendGmailUserNeedPayToClinic(dataUser) {
+
+    // here connect to nodemailer send mail
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'your mail',
+            pass: 'your password'
+        }
+    });
+
+    // send mail with defined transport object
+    const info = await transporter.sendMail({
+        from: '"Doctor Dental Clinic" <your mail>', // sender address
+        to: dataUser.email, // list of receivers
+        subject: `Dental Clinic Debt Notification`, // Subject line
+        // text: "", // plain text body
+        html: `
+    <div>
+      <p>Hello ${dataUser.name} You have to pay for the service ! 
+      <br/><br/>
+      You have a debt <b>${dataUser.priceSevice}</b>$ with us, please pay for the service you received !!<br/>
+      <br/>
+      Enter your personal area on the website, you should pay for the service.
+      <br/><br/>
+      <b>Thank you very much. See you at our meeting at the clinic 😁</b>
+      <br/><br/>
+      <img src="https://i.postimg.cc/gjHhq6WS/logo-clinic.jpg" alt="Doctor" width="auto" height="150">
+    </div>
+   `, // html body
+    });
+
+    console.log("Message sent: %s", info.messageId);
+}
+
+
+
+module.exports = { sendGmailAboutAppointment, sendGmailWhenUserRegister, sendGmailUserNeedPayToClinic };

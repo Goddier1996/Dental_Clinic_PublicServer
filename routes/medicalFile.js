@@ -1,7 +1,8 @@
 const express = require(`express`)//get,post we use now
 const { connectToDb, getDb } = require("../db")
 const { ObjectId } = require("mongodb")
-const cors = require(`cors`)
+const cors = require(`cors`);
+const { sendGmailUserNeedPayToClinic } = require("../functions/functionsServer");
 
 
 
@@ -31,7 +32,6 @@ connectToDb((err) => {
 
 
 
-
 infoMedicalFile.get('/', (req, res) => {
 
     let allMedical = []
@@ -51,7 +51,6 @@ infoMedicalFile.get('/', (req, res) => {
 
 
 
-
 // show how need pay service,this option show in doctor profile page
 infoMedicalFile.get('/showHowNeedPay', (req, res) => {
 
@@ -61,16 +60,14 @@ infoMedicalFile.get('/showHowNeedPay', (req, res) => {
     db.collection('medicalfile')
         .find({ IsActive: "1" })
         .sort({ author: 1 })
-        .forEach(fileMedica => MedicalFiles.push(fileMedica))
+        .forEach(fileMedical => MedicalFiles.push(fileMedical))
         .then(() => {
             res.status(200).json(MedicalFiles)
         })
         .catch(() => {
             res.status(500).json({ error: "not fetch the file" })
         })
-
 })
-
 
 
 
@@ -97,8 +94,6 @@ infoMedicalFile.get('/:Publishby', (req, res) => {
 
 
 
-
-
 // show history pay service user
 infoMedicalFile.get('/showHistoryFiles/:Publishby', (req, res) => {
 
@@ -117,7 +112,6 @@ infoMedicalFile.get('/showHistoryFiles/:Publishby', (req, res) => {
         })
 
 })
-
 
 
 
@@ -148,7 +142,6 @@ infoMedicalFile.patch('/delete/:id', (req, res) => {
 
 
 
-
 // add new medical file
 infoMedicalFile.post('/', (req, res) => {
 
@@ -163,6 +156,37 @@ infoMedicalFile.post('/', (req, res) => {
         .catch(err => {
             res.status(500).json({ error: "not fetch the file" })
         })
+})
+
+
+
+infoMedicalFile.post('/showHowNeedPaySendMail/:id', (req, res) => {
+
+    const user = req.body
+
+    if (ObjectId.isValid(req.params.id)) {
+        db.collection('medicalfile')
+            .findOne({ _id: ObjectId(req.params.id) })
+            .then(() => {
+                // here we send email to user with info about his debt
+                sendGmailUserNeedPayToClinic(user)
+                    .then(result => {
+                        res.status(200).json(result)
+                    })
+                    .catch(err => {
+                        res.status(500).json({ error: "not fetch the file" })
+                    })
+            })
+            .then(() => {
+                res.status(200).json(MedicalFiles)
+            })
+            .catch(() => {
+                res.status(500).json({ error: "not fetch the file" })
+            })
+    }
+    else {
+        res.status(500).json({ error: "Not a valid doc id" })
+    }
 })
 
 
