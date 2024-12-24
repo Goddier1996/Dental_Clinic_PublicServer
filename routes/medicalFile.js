@@ -177,9 +177,6 @@ infoMedicalFile.post('/showHowNeedPaySendMail/:id', (req, res) => {
                         res.status(500).json({ error: "not fetch the file" })
                     })
             })
-            .then(() => {
-                res.status(200).json(MedicalFiles)
-            })
             .catch(() => {
                 res.status(500).json({ error: "not fetch the file" })
             })
