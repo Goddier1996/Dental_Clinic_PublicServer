@@ -2,7 +2,7 @@ const express = require(`express`)//get,post we use now
 const { connectToDb, getDb } = require("../db")
 const { ObjectId } = require("mongodb")
 const cors = require(`cors`)
-const { sendGmailAboutAppointment, sendGmailWhenUserRegister } = require("../functions/functionsServer");
+const { sendGmailAboutAppointment, sendGmailWhenUserRegister, sendGmailCloseUserTurnDontCome } = require("../functions/functionsServer");
 
 
 
@@ -447,6 +447,34 @@ users.get('/:id', (req, res) => {
     }
 
 
+})
+
+
+
+// here close user turn, because he dont come to the clinic
+users.post('/sendMailAboutCloseYourTurn/:id', (req, res) => {
+
+    const user = req.body
+
+    if (ObjectId.isValid(req.params.id)) {
+        db.collection('users')
+            .findOne({ _id: ObjectId(req.params.id) })
+            .then(() => {
+                sendGmailCloseUserTurnDontCome(user)
+                    .then(result => {
+                        res.status(200).json(result)
+                    })
+                    .catch(err => {
+                        res.status(500).json({ error: "not fetch the file" })
+                    })
+            })
+            .catch(() => {
+                res.status(500).json({ error: "not fetch the file" })
+            })
+    }
+    else {
+        res.status(500).json({ error: "Not a valid doc id" })
+    }
 })
 
 

@@ -115,4 +115,39 @@ async function sendGmailUserNeedPayToClinic(dataUser) {
 
 
 
-module.exports = { sendGmailAboutAppointment, sendGmailWhenUserRegister, sendGmailUserNeedPayToClinic };
+// here close user turn, because he dont come to the clinic
+async function sendGmailCloseUserTurnDontCome(dataUser) {
+
+    // here connect to nodemailer send mail
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'your gmail',
+            pass: 'your password'
+        }
+    });
+
+    // send mail with defined transport object
+    const info = await transporter.sendMail({
+        from: '"Admin Dental Clinic" <gmail>', // sender address
+        to: dataUser.Email, // list of receivers
+        subject: `Dental Clinic CLose Your Turn`, // Subject line
+        // text: "", // plain text body
+        html: `
+    <div>
+      <p>Hello ${dataUser.FirstName} Today was your turn ! 
+      <br/><br/>
+       You did not come to the clinic today, we are sorry but we have to close your turn.<br/>
+      <b>Thank you very much.</b>
+      <br/><br/>
+      <img src="https://i.postimg.cc/gjHhq6WS/logo-clinic.jpg" alt="Doctor" width="auto" height="150">
+    </div>
+   `, // html body
+    });
+
+    console.log("Message sent: %s", info.messageId);
+}
+
+
+
+module.exports = { sendGmailAboutAppointment, sendGmailWhenUserRegister, sendGmailUserNeedPayToClinic, sendGmailCloseUserTurnDontCome };

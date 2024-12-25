@@ -4,7 +4,6 @@ const { ObjectId } = require("mongodb")
 const cors = require(`cors`)
 
 
-
 let reviews = express.Router();
 
 
@@ -140,6 +139,22 @@ reviews.delete('/delete/:id', (req, res) => {
         res.status(500).json({ error: "Not a valid doc id" })
     }
 })
+
+
+
+reviews.delete('/deleteAllReviewUser/:id', (req, res) => {
+
+    db.collection('reviews')
+        .deleteMany({ Publish_by: req.params.id })
+
+        .then(result => {
+            res.status(200).json(result)
+        })
+        .catch(err => {
+            res.status(500).json({ error: "not fetch the file" })
+        })
+})
+
 
 
 

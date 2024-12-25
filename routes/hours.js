@@ -49,6 +49,7 @@ infoHours.get('/', (req, res) => {
 
 
 
+
 infoHours.get('/:code', (req, res) => {
 
 
@@ -66,6 +67,8 @@ infoHours.get('/:code', (req, res) => {
         })
 
 })
+
+
 
 
 // is not active 2

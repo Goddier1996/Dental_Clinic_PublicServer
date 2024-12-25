@@ -188,5 +188,20 @@ infoMedicalFile.post('/showHowNeedPaySendMail/:id', (req, res) => {
 
 
 
+infoMedicalFile.delete('/deleteAllMedicalFileUser/:id', (req, res) => {
+
+    db.collection('medicalfile')
+        .deleteMany({ Publish_by: req.params.id })
+
+        .then(result => {
+            res.status(200).json(result)
+        })
+        .catch(err => {
+            res.status(500).json({ error: "not fetch the file" })
+        })
+})
+
+
+
 
 module.exports = infoMedicalFile;
