@@ -8,14 +8,14 @@ async function sendGmailAboutAppointment(dataUser) {
     let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'your mail',
-            pass: 'your password'
+            user: 'artium20@gmail.com',
+            pass: 'mnvb hxyu feld kvzj'
         }
     });
 
     // send mail with defined transport object
     const info = await transporter.sendMail({
-        from: '"Doctor Artem" <your mail>', // sender address
+        from: '"Doctor Artem" <artium20@gmail.com>', // sender address
         to: dataUser.Email, // list of receivers
         subject: `An Appointment at a Dental Clinic`, // Subject line
         // text: "", // plain text body
@@ -46,14 +46,14 @@ async function sendGmailWhenUserRegister(dataUser) {
     let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'your mail',
-            pass: 'your password'
+            user: 'artium20@gmail.com',
+            pass: 'mnvb hxyu feld kvzj'
         }
     });
 
     // send mail with defined transport object
     const info = await transporter.sendMail({
-        from: '"Admin Clinic Dental Clinic" <your mail>', // sender address
+        from: '"Admin Dental Clinic" <artium20@gmail.com>', // sender address
         to: dataUser.Email, // list of receivers
         subject: `Successfully Registered to the Dental Clinic`, // Subject line
         // text: "", // plain text body
@@ -77,6 +77,7 @@ async function sendGmailWhenUserRegister(dataUser) {
 
 
 
+
 // here we send email to user with info about his debt
 async function sendGmailUserNeedPayToClinic(dataUser) {
 
@@ -84,14 +85,14 @@ async function sendGmailUserNeedPayToClinic(dataUser) {
     let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'your mail',
-            pass: 'your password'
+            user: 'artium20@gmail.com',
+            pass: 'mnvb hxyu feld kvzj'
         }
     });
 
     // send mail with defined transport object
     const info = await transporter.sendMail({
-        from: '"Doctor Dental Clinic" <your mail>', // sender address
+        from: '"Doctor Dental Clinic" <artium20@gmail.com>', // sender address
         to: dataUser.email, // list of receivers
         subject: `Dental Clinic Debt Notification`, // Subject line
         // text: "", // plain text body
@@ -115,6 +116,7 @@ async function sendGmailUserNeedPayToClinic(dataUser) {
 
 
 
+
 // here close user turn, because he dont come to the clinic
 async function sendGmailCloseUserTurnDontCome(dataUser) {
 
@@ -122,14 +124,14 @@ async function sendGmailCloseUserTurnDontCome(dataUser) {
     let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'your gmail',
-            pass: 'your password'
+            user: 'artium20@gmail.com',
+            pass: 'mnvb hxyu feld kvzj'
         }
     });
 
     // send mail with defined transport object
     const info = await transporter.sendMail({
-        from: '"Admin Dental Clinic" <gmail>', // sender address
+        from: '"Admin Dental Clinic" <artium20@gmail.com>', // sender address
         to: dataUser.Email, // list of receivers
         subject: `Dental Clinic CLose Your Turn`, // Subject line
         // text: "", // plain text body
@@ -150,4 +152,41 @@ async function sendGmailCloseUserTurnDontCome(dataUser) {
 
 
 
-module.exports = { sendGmailAboutAppointment, sendGmailWhenUserRegister, sendGmailUserNeedPayToClinic, sendGmailCloseUserTurnDontCome };
+// here close user turn, because he dont come to the clinic
+async function sendGmailDeleteAccountMessage(dataUser) {
+
+    // here connect to nodemailer send mail
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'artium20@gmail.com',
+            pass: 'mnvb hxyu feld kvzj'
+        }
+    });
+
+    // send mail with defined transport object
+    const info = await transporter.sendMail({
+        from: '"Admin Dental Clinic" <artium20@gmail.com>', // sender address
+        to: dataUser.email, // list of receivers
+        subject: `Dental Clinic Message`, // Subject line
+        // text: "", // plain text body
+        html: `
+    <div>
+      <p>Hello ${dataUser.name} You have successfully deleted your dental clinic user ! 
+      <br/><br/>
+       If you want, you can restore your user, send a message to the site's admin.<br/>
+       <a href="https://dental-clinic-israel-vip.web.app/Location">Click Here to move Contact Page</a><br/><br/>
+      <b>Thank you very much.</b>
+      <br/>
+      <img src="https://i.postimg.cc/gjHhq6WS/logo-clinic.jpg" alt="Doctor" width="auto" height="150">
+    </div>
+   `, // html body
+    });
+
+    console.log("Message sent: %s", info.messageId);
+}
+
+
+
+
+module.exports = { sendGmailAboutAppointment, sendGmailWhenUserRegister, sendGmailUserNeedPayToClinic, sendGmailCloseUserTurnDontCome, sendGmailDeleteAccountMessage };

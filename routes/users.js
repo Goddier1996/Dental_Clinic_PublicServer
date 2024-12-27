@@ -2,7 +2,7 @@ const express = require(`express`)//get,post we use now
 const { connectToDb, getDb } = require("../db")
 const { ObjectId } = require("mongodb")
 const cors = require(`cors`)
-const { sendGmailAboutAppointment, sendGmailWhenUserRegister, sendGmailCloseUserTurnDontCome } = require("../functions/functionsServer");
+const { sendGmailAboutAppointment, sendGmailWhenUserRegister, sendGmailCloseUserTurnDontCome, sendGmailDeleteAccountMessage } = require("../functions/functionsServer");
 
 
 
@@ -476,6 +476,34 @@ users.post('/sendMailAboutCloseYourTurn/:id', (req, res) => {
         res.status(500).json({ error: "Not a valid doc id" })
     }
 })
+
+
+
+users.post('/sendGmailDeleteAccountMessage/:id', (req, res) => {
+
+    const user = req.body
+
+    if (ObjectId.isValid(req.params.id)) {
+        db.collection('users')
+            .findOne({ _id: ObjectId(req.params.id) })
+            .then(() => {
+                sendGmailDeleteAccountMessage(user)
+                    .then(result => {
+                        res.status(200).json(result)
+                    })
+                    .catch(err => {
+                        res.status(500).json({ error: "not fetch the file" })
+                    })
+            })
+            .catch(() => {
+                res.status(500).json({ error: "not fetch the file" })
+            })
+    }
+    else {
+        res.status(500).json({ error: "Not a valid doc id" })
+    }
+})
+
 
 
 
