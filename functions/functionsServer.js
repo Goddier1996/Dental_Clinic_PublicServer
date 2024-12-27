@@ -1,17 +1,17 @@
 const nodemailer = require('nodemailer');
 
 
+// here connect to nodemailer send mail
+let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'your mail',
+        pass: 'your password'
+    }
+});
+
 // here we send email to user with info about his appointment
 async function sendGmailAboutAppointment(dataUser) {
-
-    // here connect to nodemailer send mail
-    let transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: 'Your mail',
-            pass: 'Your password'
-        }
-    });
 
     // send mail with defined transport object
     const info = await transporter.sendMail({
@@ -41,15 +41,6 @@ async function sendGmailAboutAppointment(dataUser) {
 
 // here we send email to user with info about his registration
 async function sendGmailWhenUserRegister(dataUser) {
-
-    // here connect to nodemailer send mail
-    let transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: 'your mail',
-            pass: 'your password'
-        }
-    });
 
     // send mail with defined transport object
     const info = await transporter.sendMail({
@@ -81,15 +72,6 @@ async function sendGmailWhenUserRegister(dataUser) {
 // here we send email to user with info about his debt
 async function sendGmailUserNeedPayToClinic(dataUser) {
 
-    // here connect to nodemailer send mail
-    let transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: 'your mail',
-            pass: 'your password'
-        }
-    });
-
     // send mail with defined transport object
     const info = await transporter.sendMail({
         from: '"Doctor Dental Clinic" <mail>', // sender address
@@ -120,15 +102,6 @@ async function sendGmailUserNeedPayToClinic(dataUser) {
 // here close user turn, because he dont come to the clinic
 async function sendGmailCloseUserTurnDontCome(dataUser) {
 
-    // here connect to nodemailer send mail
-    let transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: 'your mail',
-            pass: 'your password'
-        }
-    });
-
     // send mail with defined transport object
     const info = await transporter.sendMail({
         from: '"Admin Dental Clinic" <mail>', // sender address
@@ -154,15 +127,6 @@ async function sendGmailCloseUserTurnDontCome(dataUser) {
 
 // here close user turn, because he dont come to the clinic
 async function sendGmailDeleteAccountMessage(dataUser) {
-
-    // here connect to nodemailer send mail
-    let transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: 'youe mail',
-            pass: 'your password'
-        }
-    });
 
     // send mail with defined transport object
     const info = await transporter.sendMail({
